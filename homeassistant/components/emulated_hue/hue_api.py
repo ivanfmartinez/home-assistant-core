@@ -519,17 +519,23 @@ class HueOneLightChangeView(HomeAssistantView):
 
         # If the requested entity is a climate, set the temperature
         elif entity.domain == climate.DOMAIN:
-            # We don't support turning climate devices on or off,
-            # only setting the temperature
-            service = None
+            _LOGGER.error("climate %s %s", service, parsed[STATE_BRIGHTNESS])
 
+            # Alexa send brightness 100 on generic turn on
+            # In this case keep the defined temperature setting
             if (
                 entity_features & ClimateEntityFeature.TARGET_TEMPERATURE
                 and parsed[STATE_BRIGHTNESS] is not None
+                and parsed[STATE_BRIGHTNESS] < 100
             ):
+                _LOGGER.error("climate set Temperature %s", parsed[STATE_BRIGHTNESS])
                 domain = entity.domain
                 service = SERVICE_SET_TEMPERATURE
                 data[ATTR_TEMPERATURE] = parsed[STATE_BRIGHTNESS]
+            else:
+                _LOGGER.error("climate %s", service)
+                # follow with turn on/off
+                domain = entity.domain
 
         # If the requested entity is a humidifier, set the humidity
         elif entity.domain == humidifier.DOMAIN:
