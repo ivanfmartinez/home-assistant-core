@@ -38,6 +38,10 @@ class TraccarServerDeviceTracker(TraccarServerEntity, TrackerEntity):
         """Return device specific attributes."""
         return {
             **self.traccar_attributes,
+            "fixTime": self.traccar_position["fixTime"],
+            "serverTime": self.traccar_position["serverTime"],
+            "deviceTime": self.traccar_position["deviceTime"],
+            "lastUpdate": self.traccar_device["lastUpdate"],
             ATTR_CATEGORY: self.traccar_device["category"],
             ATTR_TRACCAR_ID: self.traccar_device["id"],
             ATTR_TRACKER: DOMAIN,
